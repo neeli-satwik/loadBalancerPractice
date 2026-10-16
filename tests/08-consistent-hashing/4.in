@@ -1,0 +1,5 @@
+POOL a b c
+LOOKUP wrap2
+LOOKUP a#3
+LOOKUP b#15
+LOOKUP c#0

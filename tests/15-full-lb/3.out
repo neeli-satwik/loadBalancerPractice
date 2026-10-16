@@ -1,0 +1,15 @@
+OK
+OK
+OK
+200 a new Set-Cookie: route=a; Path=/; HttpOnly
+200 b new Set-Cookie: route=b; Path=/; HttpOnly
+200 a new Set-Cookie: route=a; Path=/; HttpOnly
+429 Retry-After: 1
+200 b new Set-Cookie: route=b; Path=/; HttpOnly
+OK
+200 a new Set-Cookie: route=a; Path=/; HttpOnly
+429 Retry-After: 1
+lb_requests_total{backend="a"} 3
+lb_requests_total{backend="b"} 2
+lb_rate_limited_total 2
+lb_unavailable_total 0

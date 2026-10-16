@@ -1,0 +1,7 @@
+POOL web1 web2
+REQUEST
+GET / HTTP/1.1
+Host: shop.example
+X-Forwarded-For: 203.0.113.9
+
+METRICS

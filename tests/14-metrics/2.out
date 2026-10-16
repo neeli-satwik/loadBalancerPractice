@@ -1,0 +1,20 @@
+OK
+# HELP lb_requests_total Requests proxied, by backend and response status.
+# TYPE lb_requests_total counter
+# HELP lb_bytes_total Bytes proxied, by backend and direction.
+# TYPE lb_bytes_total counter
+lb_bytes_total{backend="only",direction="in"} 0
+lb_bytes_total{backend="only",direction="out"} 0
+# HELP lb_request_duration_seconds Time spent proxying a request.
+# TYPE lb_request_duration_seconds histogram
+lb_request_duration_seconds_bucket{backend="only",le="0.01"} 0
+lb_request_duration_seconds_bucket{backend="only",le="0.05"} 0
+lb_request_duration_seconds_bucket{backend="only",le="0.1"} 0
+lb_request_duration_seconds_bucket{backend="only",le="0.5"} 0
+lb_request_duration_seconds_bucket{backend="only",le="1"} 0
+lb_request_duration_seconds_bucket{backend="only",le="+Inf"} 0
+lb_request_duration_seconds_sum{backend="only"} 0
+lb_request_duration_seconds_count{backend="only"} 0
+# HELP lb_backend_up 1 if the backend is considered healthy, else 0.
+# TYPE lb_backend_up gauge
+lb_backend_up{backend="only"} 1

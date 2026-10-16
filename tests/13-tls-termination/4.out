@@ -1,0 +1,10 @@
+OK
+api_wild
+default
+default
+default
+OK
+OK
+second
+*.api.example.com -> api_wild
+a.com -> second

@@ -1,0 +1,5 @@
+POOL a
+PROBE a HTTP/1.1 503 Service Unavailable
+PROBE a HTTP/1.1 503 Service Unavailable
+STATUS
+HEALTHY

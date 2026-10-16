@@ -1,0 +1,18 @@
+POOL 10.0.0.11:8080 10.0.0.12:8080 10.0.0.13:8080
+REQUEST
+GET / HTTP/1.1
+Host: shop.example
+User-Agent: curl/8.4.0
+cookie: theme=dark; route=10.0.0.12:8080; lang=en
+Accept: */*
+
+REQUEST
+GET / HTTP/1.1
+Host: shop.example
+COOKIE: route=10.0.0.13:8080
+
+REQUEST
+GET / HTTP/1.1
+Host: shop.example
+Cookie: route=10.0.0.99:8080
+

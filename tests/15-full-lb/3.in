@@ -1,0 +1,40 @@
+LIMIT 3 60
+NOW 0
+POOL a b
+REQUEST
+GET / HTTP/1.1
+Host: shop.example
+X-Forwarded-For: 203.0.113.7
+
+REQUEST
+GET / HTTP/1.1
+Host: shop.example
+X-Forwarded-For: 203.0.113.7
+
+REQUEST
+GET / HTTP/1.1
+Host: shop.example
+X-Forwarded-For: 203.0.113.7
+
+REQUEST
+GET / HTTP/1.1
+Host: shop.example
+X-Forwarded-For: 203.0.113.7
+
+REQUEST
+GET / HTTP/1.1
+Host: shop.example
+X-Forwarded-For: 203.0.113.8
+
+NOW 1000
+REQUEST
+GET / HTTP/1.1
+Host: shop.example
+X-Forwarded-For: 203.0.113.7
+
+REQUEST
+GET / HTTP/1.1
+Host: shop.example
+X-Forwarded-For: 203.0.113.7
+
+METRICS

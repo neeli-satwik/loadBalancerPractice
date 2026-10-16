@@ -1,0 +1,15 @@
+DEFAULT fallback
+ROUTE api.example.com /v1/ svc1
+ROUTE api.example.com /v2/ svc2
+L7
+GET /v1/users HTTP/1.1
+Host: api.example.com
+
+L7
+GET /v2/items?x=/v1/ HTTP/1.1
+Host: api.example.com
+
+L7
+GET /v3/other HTTP/1.1
+Host: api.example.com
+

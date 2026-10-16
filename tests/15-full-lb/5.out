@@ -1,0 +1,16 @@
+OK
+FAIL
+FAIL
+FAIL
+FAIL
+FAIL
+FAIL
+503 no healthy backend
+503 no healthy backend
+PASS
+PASS
+200 a new Set-Cookie: route=a; Path=/; HttpOnly
+lb_requests_total{backend="a"} 1
+lb_requests_total{backend="b"} 0
+lb_rate_limited_total 0
+lb_unavailable_total 2

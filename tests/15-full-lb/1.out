@@ -1,0 +1,6 @@
+OK
+200 web1 new Set-Cookie: route=web1; Path=/; HttpOnly
+lb_requests_total{backend="web1"} 1
+lb_requests_total{backend="web2"} 0
+lb_rate_limited_total 0
+lb_unavailable_total 0

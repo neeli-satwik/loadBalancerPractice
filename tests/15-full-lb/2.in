@@ -1,0 +1,34 @@
+NOW 0
+POOL a b c
+REQUEST
+GET / HTTP/1.1
+Host: shop.example
+X-Forwarded-For: 198.51.100.1
+
+REQUEST
+GET / HTTP/1.1
+Host: shop.example
+X-Forwarded-For: 198.51.100.2
+
+REQUEST
+GET / HTTP/1.1
+Host: shop.example
+X-Forwarded-For: 198.51.100.3
+
+REQUEST
+GET / HTTP/1.1
+Host: shop.example
+X-Forwarded-For: 198.51.100.4
+
+REQUEST
+GET / HTTP/1.1
+Host: shop.example
+X-Forwarded-For: 198.51.100.5
+Cookie: route=b
+
+REQUEST
+GET / HTTP/1.1
+Host: shop.example
+X-Forwarded-For: 198.51.100.6
+
+METRICS

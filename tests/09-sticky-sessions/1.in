@@ -1,0 +1,10 @@
+POOL web1 web2
+REQUEST
+GET / HTTP/1.1
+Host: shop.example
+Cookie: route=web2
+
+REQUEST
+GET /cart HTTP/1.1
+Host: shop.example
+

@@ -1,0 +1,6 @@
+OK
+a new Set-Cookie: route=a; Path=/; HttpOnly
+b new Set-Cookie: route=b; Path=/; HttpOnly
+b sticky
+c new Set-Cookie: route=c; Path=/; HttpOnly
+a sticky

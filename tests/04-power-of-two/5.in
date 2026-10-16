@@ -1,0 +1,4 @@
+POOL a b
+PICK a zz
+PICK zz a
+STATUS

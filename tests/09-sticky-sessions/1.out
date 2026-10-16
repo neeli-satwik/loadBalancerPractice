@@ -1,0 +1,3 @@
+OK
+web2 sticky
+web1 new Set-Cookie: route=web1; Path=/; HttpOnly

@@ -1,0 +1,11 @@
+OK
+OK
+OK
+ec1
+ec3
+ec2
+default
+default
+*.example.com -> ec2
+api.example.com -> ec3
+example.com -> ec1

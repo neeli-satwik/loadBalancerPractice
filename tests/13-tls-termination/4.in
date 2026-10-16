@@ -1,0 +1,9 @@
+CERT *.api.example.com api_wild
+LOOKUP v1.api.example.com
+LOOKUP api.example.com
+LOOKUP .api.example.com
+LOOKUP x.y.api.example.com
+CERT a.com first
+CERT a.com second
+LOOKUP A.COM
+LIST

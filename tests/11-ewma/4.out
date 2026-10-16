@@ -1,0 +1,9 @@
+OK
+fast
+fast
+OK
+OK
+fast
+fast
+fast ewma=10.000 inflight=3
+slow ewma=100.000 inflight=0

@@ -1,0 +1,39 @@
+OK
+OK
+OK
+OK
+OK
+OK
+OK
+# HELP lb_requests_total Requests proxied, by backend and response status.
+# TYPE lb_requests_total counter
+lb_requests_total{backend="a",status="200"} 2
+lb_requests_total{backend="b",status="500"} 1
+# HELP lb_bytes_total Bytes proxied, by backend and direction.
+# TYPE lb_bytes_total counter
+lb_bytes_total{backend="a",direction="in"} 1024
+lb_bytes_total{backend="a",direction="out"} 2048
+lb_bytes_total{backend="b",direction="in"} 0
+lb_bytes_total{backend="b",direction="out"} 0
+# HELP lb_request_duration_seconds Time spent proxying a request.
+# TYPE lb_request_duration_seconds histogram
+lb_request_duration_seconds_bucket{backend="a",le="0.01"} 0
+lb_request_duration_seconds_bucket{backend="a",le="0.05"} 2
+lb_request_duration_seconds_bucket{backend="a",le="0.1"} 2
+lb_request_duration_seconds_bucket{backend="a",le="0.5"} 2
+lb_request_duration_seconds_bucket{backend="a",le="1"} 2
+lb_request_duration_seconds_bucket{backend="a",le="+Inf"} 2
+lb_request_duration_seconds_sum{backend="a"} 0.055
+lb_request_duration_seconds_count{backend="a"} 2
+lb_request_duration_seconds_bucket{backend="b",le="0.01"} 0
+lb_request_duration_seconds_bucket{backend="b",le="0.05"} 0
+lb_request_duration_seconds_bucket{backend="b",le="0.1"} 0
+lb_request_duration_seconds_bucket{backend="b",le="0.5"} 0
+lb_request_duration_seconds_bucket{backend="b",le="1"} 1
+lb_request_duration_seconds_bucket{backend="b",le="+Inf"} 1
+lb_request_duration_seconds_sum{backend="b"} 1
+lb_request_duration_seconds_count{backend="b"} 1
+# HELP lb_backend_up 1 if the backend is considered healthy, else 0.
+# TYPE lb_backend_up gauge
+lb_backend_up{backend="a"} 1
+lb_backend_up{backend="b"} 0

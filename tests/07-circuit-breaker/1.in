@@ -1,0 +1,10 @@
+POOL a
+CALL a HTTP/1.1 500 Internal Server Error
+CALL a HTTP/1.1 500 Internal Server Error
+CALL a TIMEOUT
+CALL a HTTP/1.1 502 Bad Gateway
+CALL a RESET
+STATUS
+CALL a HTTP/1.1 200 OK
+NOW 30
+STATUS

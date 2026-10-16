@@ -1,0 +1,36 @@
+POOL a b c
+REQUEST
+GET / HTTP/1.1
+Host: shop.example
+Cookie: xroute=b
+
+REQUEST
+GET / HTTP/1.1
+Host: shop.example
+Cookie: route2=b
+
+REQUEST
+GET / HTTP/1.1
+Host: shop.example
+Cookie: myroute=c
+
+REQUEST
+GET / HTTP/1.1
+Host: shop.example
+X-Cookie: route=b
+
+REQUEST
+GET / HTTP/1.1
+Host: shop.example
+Set-Cookie: route=c
+
+REQUEST
+GET / HTTP/1.1
+Host: shop.example
+Cookie: Route=b
+
+REQUEST
+GET / HTTP/1.1
+Host: shop.example
+Cookie: a=route=b
+

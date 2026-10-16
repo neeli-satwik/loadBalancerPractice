@@ -1,0 +1,13 @@
+OK
+OK
+200 a new Set-Cookie: route=a; Path=/; HttpOnly
+200 b new Set-Cookie: route=b; Path=/; HttpOnly
+200 c new Set-Cookie: route=c; Path=/; HttpOnly
+200 a new Set-Cookie: route=a; Path=/; HttpOnly
+200 b sticky
+200 b new Set-Cookie: route=b; Path=/; HttpOnly
+lb_requests_total{backend="a"} 2
+lb_requests_total{backend="b"} 3
+lb_requests_total{backend="c"} 1
+lb_rate_limited_total 0
+lb_unavailable_total 0

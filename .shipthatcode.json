@@ -1,0 +1,78 @@
+{
+  "course": "build-load-balancer",
+  "language": "python",
+  "language_id": 1071,
+  "entrypoint": "main.py",
+  "version": 1,
+  "content_hash": "4b094cf1f89611e3",
+  "lessons": [
+    {
+      "slug": "round-robin",
+      "tests_hash": "fb12069e053a"
+    },
+    {
+      "slug": "weighted-rr",
+      "tests_hash": "559ea4daa840"
+    },
+    {
+      "slug": "least-connections",
+      "tests_hash": "92723784ea1f"
+    },
+    {
+      "slug": "power-of-two",
+      "tests_hash": "8a7e21d64cc8"
+    },
+    {
+      "slug": "health-checks",
+      "tests_hash": "a87d5f517d03"
+    },
+    {
+      "slug": "passive-health",
+      "tests_hash": "ba150e60c92a"
+    },
+    {
+      "slug": "circuit-breaker",
+      "tests_hash": "37d3ca883c4f"
+    },
+    {
+      "slug": "consistent-hashing",
+      "tests_hash": "a547fcd44cb5"
+    },
+    {
+      "slug": "sticky-sessions",
+      "tests_hash": "de0c472e3fd3"
+    },
+    {
+      "slug": "rate-limiting",
+      "tests_hash": "f86aeaa6ee3f"
+    },
+    {
+      "slug": "ewma",
+      "tests_hash": "877246697e65"
+    },
+    {
+      "slug": "l4-vs-l7",
+      "tests_hash": "81cfc644b577"
+    },
+    {
+      "slug": "tls-termination",
+      "tests_hash": "f2994e295929"
+    },
+    {
+      "slug": "metrics",
+      "tests_hash": "48d5af66101c"
+    },
+    {
+      "slug": "full-lb",
+      "tests_hash": "051624254cd2"
+    },
+    {
+      "slug": "slow-start",
+      "tests_hash": "00a2b1836c22"
+    },
+    {
+      "slug": "graceful-drain",
+      "tests_hash": "d135db4becf2"
+    }
+  ]
+}

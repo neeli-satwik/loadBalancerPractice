@@ -1,0 +1,10 @@
+ROUTE * /admin/ admin_svc
+ROUTE shop.example / web_svc
+L7
+GET /admin/users?page=2 HTTP/1.1
+Host: Shop.Example:8443
+
+L7
+GET / HTTP/1.1
+Host: other.example
+

@@ -1,0 +1,23 @@
+POOL a b c
+REQUEST
+GET / HTTP/1.1
+Host: shop.example
+
+REQUEST
+GET / HTTP/1.1
+Host: shop.example
+
+REQUEST
+GET / HTTP/1.1
+Host: shop.example
+Cookie: route=b
+
+REQUEST
+GET / HTTP/1.1
+Host: shop.example
+
+REQUEST
+GET / HTTP/1.1
+Host: shop.example
+Cookie: route=a
+

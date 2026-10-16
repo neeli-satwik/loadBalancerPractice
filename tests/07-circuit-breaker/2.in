@@ -1,0 +1,10 @@
+POOL a
+CALL a HTTP/1.1 500 Internal Server Error
+CALL a HTTP/1.1 500 Internal Server Error
+CALL a HTTP/1.1 500 Internal Server Error
+CALL a HTTP/1.1 500 Internal Server Error
+CALL a HTTP/1.1 500 Internal Server Error
+NOW 29
+STATUS
+NOW 30
+STATUS

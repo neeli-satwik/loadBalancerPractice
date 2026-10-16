@@ -1,0 +1,8 @@
+POOL a b
+PROBE a HTTP/1.1 404 Not Found
+PROBE a HTTP/1.1 404 Not Found
+PROBE a HTTP/1.1 404 Not Found
+OBSERVE b HTTP/1.1 404 Not Found
+OBSERVE b HTTP/1.1 404 Not Found
+OBSERVE b HTTP/1.1 404 Not Found
+STATUS

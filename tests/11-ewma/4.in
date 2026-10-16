@@ -1,0 +1,8 @@
+POOL fast slow
+PICK
+PICK
+DONE fast 10
+DONE slow 100
+PICK
+PICK
+STATUS

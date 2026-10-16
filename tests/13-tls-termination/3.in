@@ -1,0 +1,9 @@
+CERT example.com ec1
+CERT *.example.com ec2
+CERT api.example.com ec3
+LOOKUP example.com
+LOOKUP api.example.com
+LOOKUP foo.example.com
+LOOKUP api.v2.example.com
+LOOKUP other.com
+LIST

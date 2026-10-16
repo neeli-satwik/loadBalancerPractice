@@ -1,0 +1,15 @@
+ROUTE host.com /api/ api_v1
+ROUTE host.com /api/v2/ api_v2
+ROUTE * /api/v2/beta/ beta
+L7
+GET /api/v2/items HTTP/1.1
+Host: host.com
+
+L7
+GET /api/users HTTP/1.1
+Host: host.com
+
+L7
+GET /api/v2/beta/x HTTP/1.1
+Host: host.com
+

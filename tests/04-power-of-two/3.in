@@ -1,0 +1,4 @@
+POOL alpha beta
+PICK beta alpha
+PICK beta alpha
+STATUS

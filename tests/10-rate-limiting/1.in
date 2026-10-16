@@ -1,0 +1,9 @@
+LIMIT 2 60
+NOW 0
+REQUEST alice
+REQUEST alice
+REQUEST alice
+NOW 250
+STATUS alice
+NOW 1000
+REQUEST alice
