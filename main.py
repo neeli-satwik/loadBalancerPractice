@@ -17,7 +17,7 @@ class RoundRobin:
         # TODO: return the backend at counter mod N, then advance the counter.
         # An empty pool answers 'EMPTY'.
         result  = 'EMPTY' if not self.pool else self.pool[self.counter % len(self.pool)]
-        counter = (self.counter + 1) % len(self.pool) if self.pool else 0
+        self.counter = (self.counter + 1) % len(self.pool) if self.pool else 0
         return result
 
 
