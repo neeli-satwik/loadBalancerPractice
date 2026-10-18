@@ -16,7 +16,7 @@ class SmoothWRR:
                 name, w = e, '1'
             self.names.append(name)
             self.weights.append(int(w))
-            self.W += w
+            self.W += int(w)
             self.current.append(0)
 
     def pick(self):
