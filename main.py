@@ -19,27 +19,33 @@ class SmoothWRR:
             self.W += int(w)
             self.current.append(0)
 
+    
     def pick(self):
-        # TODO: smooth weighted round-robin.
-        #   1. add every weight to its backend's current score
-        #   2. the highest score wins; the earliest listed wins a tie
-        #   3. subtract the total of all weights from the winner
-        # Answer 'EMPTY' when no backend has a weight above 0.
-        allZero = True
-        maxCurr, maxInd = self.current[0], 0
-        for i in range(len(self.current)):
-            if(self.current[i]!=0): 
-                allZero = False
-            if(maxCurr<self.current[i]):
-                maxCurr = self.current[i]
+        if not self.names or self.W <= 0:
+            return 'EMPTY'
+
+        maxInd = -1
+
+        # Step 1: Add each backend's weight.
+        for i in range(len(self.weights)):
+            self.current[i] += self.weights[i]
+
+            # Step 2: Find the highest score.
+            # Strict > preserves the earliest backend on ties.
+            if self.weights[i] > 0 and (
+                maxInd == -1 or self.current[i] > self.current[maxInd]
+            ):
                 maxInd = i
 
-        if allZero: return 'EMPTY'
+        # No backend has a positive weight.
+        if maxInd == -1:
+            return 'EMPTY'
 
-        for i in range(len(self.current)):
-            self.current[i] += self.weights[i] if i!=maxInd or allZero else -(self.W)
+        # Step 3: Penalize the winning backend.
+        self.current[maxInd] -= self.W
 
-        return self.names[maxInd] 
+        return self.names[maxInd]
+ 
 
 
 def main():
