@@ -1,55 +1,38 @@
 import sys
 
 
-class SmoothWRR:
+class LeastConn:
     def __init__(self):
-        self.names = []
-        self.weights = []
-        self.current = []
+        self.pool = []
+        self.active = {}
+        self.n = 0
 
-    def set_pool(self, entries):
-        self.names, self.weights, self.current = [], [], []
-        self.W = 0
-        for e in entries:
-            name, sep, w = e.rpartition('=')
-            if not sep:
-                name, w = e, '1'
-            self.names.append(name)
-            self.weights.append(int(w))
-            self.W += int(w)
-            self.current.append(0)
+    def set_pool(self, names):
+        self.pool = list(names)
+        self.active = {n: 0 for n in self.pool}
 
-    
+    def done(self, name):
+        if self.active.get(name, 0) > 0:
+            self.active[name] -= 1
+
+    def status(self):
+        return ['%s:%d' % (n, self.active[n]) for n in sorted(set(self.pool))]
+
     def pick(self):
-        if not self.names or self.W <= 0:
+        # TODO: choose the backend with the fewest in-flight requests (the first one
+        # in pool order wins a tie), count the request against it, and return its name.
+        # An empty pool answers 'EMPTY'.
+        if not self.active or self.n == 0:
             return 'EMPTY'
 
-        maxInd = -1
-
-        # Step 1: Add each backend's weight.
-        for i in range(len(self.weights)):
-            self.current[i] += self.weights[i]
-
-            # Step 2: Find the highest score.
-            # Strict > preserves the earliest backend on ties.
-            if self.weights[i] > 0 and (
-                maxInd == -1 or self.current[i] > self.current[maxInd]
-            ):
-                maxInd = i
-
-        # No backend has a positive weight.
-        if maxInd == -1:
-            return 'EMPTY'
-
-        # Step 3: Penalize the winning backend.
-        self.current[maxInd] -= self.W
-
-        return self.names[maxInd]
- 
+        for server in self.pool:
+            if self.active[server] == min(self.active.values()):
+                self.active[server] += 1
+                return server
 
 
 def main():
-    lb = SmoothWRR()
+    lb = LeastConn()
     out = []
     for raw in sys.stdin.read().splitlines():
         parts = raw.split()
@@ -61,9 +44,11 @@ def main():
             out.append('OK')
         elif cmd == 'PICK':
             out.append(lb.pick())
-        elif cmd == 'PICKN':
-            n = int(parts[1])
-            out.append(','.join(lb.pick() for _ in range(n)))
+        elif cmd == 'DONE':
+            lb.done(parts[1])
+            out.append('OK')
+        elif cmd == 'STATUS':
+            out.extend(lb.status())
     sys.stdout.write(''.join(line + '\n' for line in out))
 
 
