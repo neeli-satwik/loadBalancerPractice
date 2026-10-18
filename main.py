@@ -22,7 +22,7 @@ class LeastConn:
         # TODO: choose the backend with the fewest in-flight requests (the first one
         # in pool order wins a tie), count the request against it, and return its name.
         # An empty pool answers 'EMPTY'.
-        if not self.active or self.n == 0:
+        if not self.active:
             return 'EMPTY'
 
         for server in self.pool:
