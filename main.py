@@ -30,6 +30,7 @@ class P2C:
             chosen = a if a < b else b
         else:
             chosen = a if self.active[a] < self.active[b] else b
+        self.active[chosen] += 1
         return chosen
         
     def sample(self):
@@ -46,7 +47,6 @@ class P2C:
         if j >= i:
             j += 1
         chosen = self.choose(self.pool[i], self.pool[j])
-        self.active[chosen] += 1
         return chosen
 
 
