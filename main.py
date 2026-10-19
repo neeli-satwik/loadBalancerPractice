@@ -25,8 +25,11 @@ class P2C:
         # TODO: of the two named backends, pick the one with fewer in-flight requests
         # (a tie goes to the lexicographically smaller name), count the request
         # against it, and return its name.
-        return a if self.active[a] < self.active[b] or a<b else b
-
+        if self.active[a]==self.active[b]: return a if a < b else b
+        chosen = a if self.active[a] < self.active[b] else b
+        self.active[chosen] += 1
+        return chosen
+        
     def sample(self):
         # TODO: PICK with no arguments. Empty pool -> 'EMPTY'; one backend -> choose it
         # without drawing; otherwise draw twice (i = draw mod n, j = draw mod (n - 1),
