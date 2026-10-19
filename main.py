@@ -72,7 +72,7 @@ def main():
             lb.done(parts[1])
             out.append('OK')
         elif cmd == 'STATUS':
-            for n in sorted(lb.active):
+            for n in sorted(lb.pool):
                 out.append('%s:%d' % (n, lb.active[n]))
     sys.stdout.write(''.join(line + '\n' for line in out))
 
