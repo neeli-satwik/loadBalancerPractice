@@ -25,8 +25,11 @@ class P2C:
         # TODO: of the two named backends, pick the one with fewer in-flight requests
         # (a tie goes to the lexicographically smaller name), count the request
         # against it, and return its name.
-        if self.active[a]==self.active[b]: return a if a < b else b
-        chosen = a if self.active[a] < self.active[b] else b
+        chosen = None
+        if self.active[a]==self.active[b]: 
+            chosen = a if a < b else b
+        else:
+            chosen = a if self.active[a] < self.active[b] else b
         self.active[chosen] += 1
         return chosen
         
