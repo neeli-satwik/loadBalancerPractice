@@ -1,38 +1,52 @@
 import sys
 
+MOD = 2 ** 31
 
-class LeastConn:
+
+class P2C:
     def __init__(self):
         self.pool = []
         self.active = {}
-        self.n = 0
+        self.state = 1
 
     def set_pool(self, names):
         self.pool = list(names)
         self.active = {n: 0 for n in self.pool}
 
+    def draw(self):
+        self.state = (self.state * 1103515245 + 12345) % MOD
+        return self.state >> 16
+
     def done(self, name):
         if self.active.get(name, 0) > 0:
             self.active[name] -= 1
 
-    def status(self):
-        return ['%s:%d' % (n, self.active[n]) for n in sorted(set(self.pool))]
+    def choose(self, a, b):
+        # TODO: of the two named backends, pick the one with fewer in-flight requests
+        # (a tie goes to the lexicographically smaller name), count the request
+        # against it, and return its name.
+        return a if self.active[a] < self.active[b] else b
 
-    def pick(self):
-        # TODO: choose the backend with the fewest in-flight requests (the first one
-        # in pool order wins a tie), count the request against it, and return its name.
-        # An empty pool answers 'EMPTY'.
-        if not self.active:
+    def sample(self):
+        # TODO: PICK with no arguments. Empty pool -> 'EMPTY'; one backend -> choose it
+        # without drawing; otherwise draw twice (i = draw mod n, j = draw mod (n - 1),
+        # and if j >= i then j += 1) and choose between pool[i] and pool[j].
+        if not self.pool:
             return 'EMPTY'
-
-        for server in self.pool:
-            if self.active[server] == min(self.active.values()):
-                self.active[server] += 1
-                return server
+        if len(self.pool) == 1:
+            self.active[self.pool[0]] += 1
+            return self.pool[0]
+        i = self.draw() % len(self.pool)
+        j = self.draw() % (len(self.pool) - 1)
+        if j >= i:
+            j += 1
+        chosen = self.choose(self.pool[i], self.pool[j])
+        self.active[chosen] += 1
+        return chosen
 
 
 def main():
-    lb = LeastConn()
+    lb = P2C()
     out = []
     for raw in sys.stdin.read().splitlines():
         parts = raw.split()
@@ -42,13 +56,24 @@ def main():
         if cmd == 'POOL':
             lb.set_pool(parts[1:])
             out.append('OK')
+        elif cmd == 'SEED':
+            lb.state = int(parts[1]) % MOD
+            out.append('OK')
         elif cmd == 'PICK':
-            out.append(lb.pick())
+            if len(parts) >= 3:
+                a, b = parts[1], parts[2]
+                if a in lb.active and b in lb.active:
+                    out.append(lb.choose(a, b))
+                else:
+                    out.append('ERR')
+            else:
+                out.append(lb.sample())
         elif cmd == 'DONE':
             lb.done(parts[1])
             out.append('OK')
         elif cmd == 'STATUS':
-            out.extend(lb.status())
+            for n in sorted(lb.active):
+                out.append('%s:%d' % (n, lb.active[n]))
     sys.stdout.write(''.join(line + '\n' for line in out))
 
 
