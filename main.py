@@ -32,7 +32,16 @@ class Health:
         # TODO: update the two streaks for this backend and flip its state:
         #a pass clears the failure streak, a failure clears the pass streak;
         #UP -> DOWN at FALL consecutive failures, DOWN -> UP at RISE consecutive passes.
-        pass
+        if ok:
+            self.fails[name] = 0
+            self.passes[name] += 1
+            if not self.up[name] and self.passes[name] >= RISE:
+                self.up[name] = True
+        else:
+            self.passes[name] = 0
+            self.fails[name] += 1
+            if self.up[name] and self.fails[name] >= FALL:
+                self.up[name] = False
 
 
 def main():
