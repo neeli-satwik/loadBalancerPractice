@@ -1,6 +1,6 @@
 import sys
 
-FALL, RISE, EJECT = 3, 2, 3
+TRIP, COOLDOWN, CLOSE_AFTER = 5, 30, 3
 DIGITS = '0123456789'
 
 
@@ -17,63 +17,68 @@ def status_code(tokens):
     return int(code)
 
 
-def probe_passes(tokens):
+def is_error(tokens):
     code = status_code(tokens)
-    return 200 <= code <= 399
+    return code < 0 or 500 <= code <= 599
 
 
-def observe_is_error(tokens):
-    # TODO: true when a REAL response counts against the backend: not a well-formed
-    # status line (status_code gives -1), or a code from 500 to 599. 4xx is fine.
-    status = status_code(tokens)
-    if status == -1 or (500 <= status <= 599):
-        return True
-    return False
-
-
-class Health:
+class Breakers:
     def __init__(self):
+        self.now = 0
         self.pool = []
-        self.active_up = {}
-        self.fails = {}
-        self.passes = {}
+        self.state = {}
         self.errors = {}
+        self.good = {}
+        self.opened = {}
 
     def set_pool(self, names):
         self.pool = list(names)
-        self.active_up = {n: True for n in self.pool}
-        self.fails = {n: 0 for n in self.pool}
-        self.passes = {n: 0 for n in self.pool}
+        self.state = {n: 'CLOSED' for n in self.pool}
         self.errors = {n: 0 for n in self.pool}
+        self.good = {n: 0 for n in self.pool}
+        self.opened = {n: 0 for n in self.pool}
 
-    def probe(self, name, ok):
-        if ok:
-            self.passes[name] += 1
-            self.fails[name] = 0
-            if not self.active_up[name] and self.passes[name] >= RISE:
-                self.active_up[name] = True
-        else:
-            self.fails[name] += 1
-            self.passes[name] = 0
-            if self.active_up[name] and self.fails[name] >= FALL:
-                self.active_up[name] = False
 
-    def observe(self, name, is_error):
-        # TODO: an error adds one to this backend's passive streak, a fine response
-        # sets the streak back to 0.
-        if is_error:
-            self.errors[name] += 1
-        else:
+    def state_of(self, name):
+        self.refresh(name)
+        return self.state[name]
+
+    def refresh(self, name):
+        if self.state[name] == 'OPEN' and self.now - self.opened[name] >= COOLDOWN:
+            self.state[name] = 'HALF_OPEN'
+            self.good[name] = 0
             self.errors[name] = 0
-        pass
 
-    def is_up(self, name):
-        # TODO: UP only if the active side is up AND the passive streak is below EJECT.
-        return self.active_up[name] and self.errors[name] < EJECT
+    def call(self, name, err):
+        self.refresh(name)
+        st = self.state[name]
+        if st == 'OPEN':
+            return 'SHORT'
+        if st == 'CLOSED':
+            if err:
+                self.errors[name] += 1
+                if self.errors[name] >= TRIP:
+                    self.state[name] = 'OPEN'
+                    self.opened[name] = self.now
+                    self.errors[name] = 0
+            else:
+                self.errors[name] = 0
+        else:  # HALF_OPEN
+            if err:
+                self.state[name] = 'OPEN'
+                self.opened[name] = self.now
+                self.good[name] = 0
+            else:
+                self.good[name] += 1
+                if self.good[name] >= CLOSE_AFTER:
+                    self.state[name] = 'CLOSED'
+                    self.good[name] = 0
+                    self.errors[name] = 0
+        return 'ERROR' if err else 'OK'
 
 
 def main():
-    h = Health()
+    b = Breakers()
     out = []
     for raw in sys.stdin.read().splitlines():
         parts = raw.split()
@@ -81,25 +86,19 @@ def main():
             continue
         cmd = parts[0]
         if cmd == 'POOL':
-            h.set_pool(parts[1:])
+            b.set_pool(parts[1:])
             out.append('OK')
-        elif cmd == 'PROBE':
-            if parts[1] not in h.active_up:
+        elif cmd == 'NOW':
+            b.now = int(parts[1])
+            out.append('OK')
+        elif cmd == 'CALL':
+            if parts[1] not in b.state:
                 out.append('ERR')
                 continue
-            ok = probe_passes(parts[2:])
-            h.probe(parts[1], ok)
-            out.append('PASS' if ok else 'FAIL')
-        elif cmd == 'OBSERVE':
-            if parts[1] not in h.active_up:
-                out.append('ERR')
-                continue
-            err = observe_is_error(parts[2:])
-            h.observe(parts[1], err)
-            out.append('ERROR' if err else 'OK')
+            out.append(b.call(parts[1], is_error(parts[2:])))
         elif cmd == 'STATUS':
-            for n in h.pool:
-                out.append('%s %s' % (n, 'UP' if h.is_up(n) else 'DOWN'))
+            for n in b.pool:
+                out.append('%s %s' % (n, b.state_of(n)))
     sys.stdout.write(''.join(line + '\n' for line in out))
 
 
