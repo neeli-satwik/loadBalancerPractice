@@ -1,127 +1,65 @@
-
 import sys
 
-MOD = 2 ** 31
+FALL, RISE = 3, 2
+DIGITS = '0123456789'
 
 
-class P2C:
+def probe_passes(tokens: list[str]) -> bool:
+    """tokens: the answer split on whitespace, e.g. ['HTTP/1.1', '200', 'OK']."""
+    # TODO: true only for a well-formed status line with a code from 200 to 399:
+    #   tokens[0] is 'HTTP/' + digit + '.' + digit, tokens[1] is exactly three digits.
+    # TIMEOUT, REFUSED and anything malformed fail.
+    status = tokens[1] if len(tokens) > 1 else ''
+    if not status or (int(status) < 200 or int(status) > 399):
+        return False
+    return True
+
+
+class Health:
     def __init__(self):
         self.pool = []
-        self.active = {}
-        self.state = 1
+        self.up = {}
+        self.fails = {}
+        self.passes = {}
 
     def set_pool(self, names):
-        # Deduplicate while preserving the original order.
-        self.pool = list(dict.fromkeys(names))
-        self.active = {name: 0 for name in self.pool}
+        self.pool = list(names)
+        self.up = {n: True for n in self.pool}
+        self.fails = {n: 0 for n in self.pool}
+        self.passes = {n: 0 for n in self.pool}
 
-    def draw(self):
-        # Keep the original PRNG exactly unchanged.
-        self.state = (
-            self.state * 1103515245 + 12345
-        ) % MOD
-        return self.state >> 16
-
-    def done(self, name):
-        # Unknown names and duplicate DONE calls are harmless.
-        if self.active.get(name, 0) > 0:
-            self.active[name] -= 1
-
-    def choose(self, a, b):
-        # Validate even when choose() is called directly.
-        if a not in self.active or b not in self.active:
-            return None
-
-        # Fewer in-flight requests wins.
-        # Ties are broken lexicographically.
-        if self.active[a] <= self.active[b]:
-            chosen = a
-        else:
-            chosen = b
-
-        self.active[chosen] += 1
-        return chosen
-
-    def sample(self):
-        n = len(self.pool)
-
-        if n == 0:
-            return 'EMPTY'
-
-        if n == 1:
-            # Must not consume PRNG draws.
-            name = self.pool[0]
-            self.active[name] += 1
-            return name
-
-        # Sample two distinct indices uniformly by this scheme.
-        i = self.draw() % n
-        j = self.draw() % (n - 1)
-
-        if j >= i:
-            j += 1
-
-        return self.choose(self.pool[i], self.pool[j])
+    def record(self, name, ok):
+        # TODO: update the two streaks for this backend and flip its state:
+        #a pass clears the failure streak, a failure clears the pass streak;
+        #UP -> DOWN at FALL consecutive failures, DOWN -> UP at RISE consecutive passes.
+        pass
 
 
 def main():
-    lb = P2C()
+    h = Health()
     out = []
-
     for raw in sys.stdin.read().splitlines():
         parts = raw.split()
-
         if not parts:
             continue
-
         cmd = parts[0]
-
         if cmd == 'POOL':
-            lb.set_pool(parts[1:])
+            h.set_pool(parts[1:])
             out.append('OK')
-
-        elif cmd == 'SEED':
-            if len(parts) != 2:
+        elif cmd == 'PROBE':
+            name = parts[1]
+            if name not in h.up:
                 out.append('ERR')
                 continue
-
-            try:
-                lb.state = int(parts[1]) % MOD
-                out.append('OK')
-            except ValueError:
-                out.append('ERR')
-
-        elif cmd == 'PICK':
-            if len(parts) == 1:
-                out.append(lb.sample())
-
-            elif len(parts) == 3:
-                a, b = parts[1], parts[2]
-                chosen = lb.choose(a, b)
-                out.append(chosen if chosen is not None else 'ERR')
-
-            else:
-                out.append('ERR')
-
-        elif cmd == 'DONE':
-            if len(parts) != 2:
-                out.append('ERR')
-            else:
-                lb.done(parts[1])
-                out.append('OK')
-
+            ok = probe_passes(parts[2:])
+            h.record(name, ok)
+            out.append('PASS' if ok else 'FAIL')
         elif cmd == 'STATUS':
-            if len(parts) != 1:
-                out.append('ERR')
-            else:
-                for name in sorted(lb.pool):
-                    out.append(
-                        '{}:{}'.format(name, lb.active[name])
-                    )
-
-        else:
-            out.append('ERR')
-
+            for n in h.pool:
+                out.append('%s %s' % (n, 'UP' if h.up[n] else 'DOWN'))
+        elif cmd == 'HEALTHY':
+            ups = [n for n in h.pool if h.up[n]]
+            out.append(','.join(ups) if ups else 'none')
     sys.stdout.write(''.join(line + '\n' for line in out))
 
 
