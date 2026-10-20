@@ -10,7 +10,7 @@ def probe_passes(tokens: list[str]) -> bool:
     #   tokens[0] is 'HTTP/' + digit + '.' + digit, tokens[1] is exactly three digits.
     # TIMEOUT, REFUSED and anything malformed fail.
     status = tokens[1] if len(tokens) > 1 else ''
-    if not status.isdigit() or (int(status) < 200 or int(status) > 399):
+    if tokens[0]!='HTTP/1.1' or not status.isdigit() or (int(status) < 200 or int(status) > 399):
         return False
     return True
 
